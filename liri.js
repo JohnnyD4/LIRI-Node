@@ -1,12 +1,14 @@
-var twitterKeysNeeded = require("./keys.js");
+var fs = require("fs");
 
-var twitter = twitterKeysNeeded.twitterKeys;
+var keysNeeded = require("./keys.js");
+
+var twitter = keysNeeded.twitterKeys;
+
+var spotify = keysNeeded.spotifyKeys;
 
 var userChoice = process.argv[2];
 
 var entertainmentChoice = process.argv[3];
-
-var request = require("request");
 
 var queryUrl;
 
@@ -34,16 +36,72 @@ switch (userChoice) {
 }
 
 function getTweets() {
-	console.log("Tweet");
+	
+	var Twitter = require("twitter");
+
+	var client = new Twitter ({
+		consumer_key: twitter.consumer_key,
+		consumer_secret: twitter.consumer_secret,
+		access_token_key: twitter.access_token_key,
+		access_token_secret: twitter.access_token_secret	
+	})
+
+	var params = {screen_name: 'KWeisman5'};
+
+	client.get('statuses/user_timeline', params, function(err, tweets, response) {
+		
+		if (err) throw err;
+		
+		console.log(tweets[0].user.name);
+
+		for (var i = 0; i < 5; i++) {
+		
+			console.log("My tweet: -----> ", tweets[i].text);
+		
+			console.log("Created at: ", tweets[i].created_at);
+		}
+		
+	})
 }
 
 function getSpotifySong() {
-	console.log("Song");
-	console.log(entertainmentChoice);
+
+	var Spotify = require("node-spotify-api");
+
+	var spotifyClient = new Spotify ({
+		id: spotify.client_id,
+		secret: spotify.client_secret
+	})
+	
+	spotifyClient.search({type: 'track', query: entertainmentChoice, limit: 1}, function(err, data) {
+
+		if (err) throw err;
+
+		var topChoice = data.tracks.items[0];
+
+		console.log(topChoice.album.artists[0].name);
+
+		console.log(topChoice.name);
+
+		console.log(topChoice.album.name);
+
+		console.log(topChoice.preview_url);
+	})
 }
 
 function getMovie() {
+	// 
+	// Not working, placement is off I guess
+	// 
+	// if (entertainmentChoice === "") {
+	// 		entertainmentChoice = "Mr. Nobody";
+	// 	}
+
+	var request = require("request");
+
 	queryUrl = "http://www.omdbapi.com/?t=" + entertainmentChoice + "&y=&plot=short&apikey=40e9cece";
+
+	// console.log(queryUrl);
 
 	request(queryUrl, function (err, response, body) {
 		
@@ -66,11 +124,31 @@ function getMovie() {
 		console.log("Cast: ", parsed.Actors);
 
 		console.log("Rotten Tomatoes Score: ", parsed.Ratings[1].Value);
+
+		
 	})
 }
 
 function getText() {
-	console.log("Text");
+	fs.readFile("random.txt", "utf8", function(err, data) {
+		
+		if (err) throw err;
+
+		var dataArray = data.split(",")
+		
+		console.log(dataArray[0]);
+
+		if (dataArray[0] === userChoice) {
+			
+			userChoice = dataArray[0];
+
+			entertainmentChoice = dataArray[1];
+
+			getSpotifySong();
+
+		}
+	})
+
 }
 
 

@@ -7,5 +7,11 @@ exports.twitterKeys = {
 	access_token_secret: "SKNapCZpUd1EMb1VQhqgxKCJFDFjsbUGMrAWTN1MMmp77"
 }
 
+exports.spotifyKeys = {
+	client_id: "d689be48b874468b9225ef4af4c7f906",
+	client_secret: "ec9f5a561dc84521a4fd4c581b29baaa"
+}
+
+
 
 
