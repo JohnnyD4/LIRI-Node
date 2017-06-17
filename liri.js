@@ -1,6 +1,12 @@
 var fs = require("fs");
 
+var request = require("request");
+
 var keysNeeded = require("./keys.js");
+
+var Twitter = require("twitter");
+
+var Spotify = require("node-spotify-api");
 
 var twitter = keysNeeded.twitterKeys;
 
@@ -37,8 +43,6 @@ switch (userChoice) {
 
 function getTweets() {
 	
-	var Twitter = require("twitter");
-
 	var client = new Twitter ({
 		consumer_key: twitter.consumer_key,
 		consumer_secret: twitter.consumer_secret,
@@ -66,7 +70,9 @@ function getTweets() {
 
 function getSpotifySong() {
 
-	var Spotify = require("node-spotify-api");
+	if(!(entertainmentChoice)) {
+		entertainmentChoice = "The Sign"
+	}
 
 	var spotifyClient = new Spotify ({
 		id: spotify.client_id,
@@ -93,11 +99,13 @@ function getMovie() {
 	// 
 	// Not working, placement is off I guess
 	// 
-	// if (entertainmentChoice === "") {
-	// 		entertainmentChoice = "Mr. Nobody";
-	// 	}
+	if (!(entertainmentChoice)) {
+			
+			entertainmentChoice = "Mr. Nobody";
+			
+		}
 
-	var request = require("request");
+	
 
 	queryUrl = "http://www.omdbapi.com/?t=" + entertainmentChoice + "&y=&plot=short&apikey=40e9cece";
 
