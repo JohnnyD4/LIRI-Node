@@ -63,9 +63,16 @@ function getTweets() {
 			console.log("My tweet: -----> ", tweets[i].text);
 		
 			console.log("Created at: ", tweets[i].created_at);
+		
+			fs.appendFile("log.txt", "\n" + tweets[i].text + "\n" + tweets[i].created_at + "\n", "utf8", function(err) {
+				if (err) throw err;
+				console.log("Tweet was added to log.txt");
+			})
 		}
 		
 	})
+
+	
 }
 
 function getSpotifySong() {
@@ -92,6 +99,12 @@ function getSpotifySong() {
 		console.log(topChoice.album.name);
 
 		console.log(topChoice.preview_url);
+
+		fs.appendFile("log.txt", "\n" + topChoice.album.artists[0].name + "\n" + topChoice.name + "\n" + topChoice.album.name + "\n" + topChoice.preview_url + "\n", "utf8", function(err) {
+			if (err) throw err;
+
+			console.log("Spotify music was added to log.txt");
+		})
 	})
 }
 
@@ -133,6 +146,10 @@ function getMovie() {
 
 		console.log("Rotten Tomatoes Score: ", parsed.Ratings[1].Value);
 
+		fs.appendFile("log.txt", "\n" + parsed.Title + "\n", "utf8", function(err) {
+			if(err) throw err;
+		})
+
 		
 	})
 }
@@ -144,19 +161,15 @@ function getText() {
 
 		var dataArray = data.split(",")
 		
-		console.log(dataArray[0]);
+		userChoice = dataArray[0];
 
-		if (dataArray[0] === userChoice) {
-			
-			userChoice = dataArray[0];
+		entertainmentChoice = dataArray[1];
 
-			entertainmentChoice = dataArray[1];
+		getSpotifySong();
 
-			getSpotifySong();
-
-		}
+		
 	})
-
+	
 }
 
 
